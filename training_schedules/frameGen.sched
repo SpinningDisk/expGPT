@@ -1,0 +1,22 @@
+$(TRAINMODE) = $(SUPREVISED_LEARNING)
+x = slice($(TRAINON), 0)
+y = slice($(TRAINON), 1)
+
+env = $(ENVIRONMENT)
+agent = $(MODEL)
+agent_shape_inputs = shape(agent.inputs)
+env.out = getFunction(env, "_make_frame")
+
+setConstant(getVar(env, "embedding_dim"))
+getVar(env, "embedding_dim") = slice(agent_shape_inputs, 1)
+
+setConstant(slice(agent.inputs, 0))
+slice(agent.inputs, 0) = expand(getVar(env, "game_id"), agent_shape_inputs)
+
+$(TRAINCYCLE){
+    onEach(getFunction(env, "step")){
+        x = y
+        y = env.out
+    }
+    trainon(agent, x, y)
+}

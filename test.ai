@@ -1,0 +1,4 @@
+load_model(frameGPT/GPT/GPT, 0)
+load_env(snek/env/SnakeEnv)
+render()
+env_step(100)
